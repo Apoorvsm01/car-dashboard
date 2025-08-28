@@ -1,176 +1,208 @@
-# Carvo Dashboard - Fleet & Booking Management System
+# 🚗 Car Dashboard
 
-A modern, responsive dashboard application for managing vehicle fleets and bookings with real-time updates and interactive scheduling.
+A modern, responsive car rental management dashboard built with HTML, CSS, and JavaScript. Features real-time vehicle tracking, order management, customer data, and beautiful UI with Pixabay image integration.
 
-## 🏗️ Project Structure
+## ✨ Features
+
+### 🗺️ **Interactive Map**
+- Real-time vehicle tracking with Leaflet.js
+- 6 specific vehicles with custom car markers
+- Full-width popup images with vehicle details
+- Dynamic location updates
+
+### 📊 **Statistics Dashboard**
+- Real-time fleet statistics
+- Revenue tracking and analytics
+- Vehicle utilization metrics
+- Customer satisfaction ratings
+
+### 📋 **Order Management**
+- Complete order lifecycle management
+- Customer and vehicle assignment
+- Status tracking (Active, Completed, Pending)
+- Search and filter functionality
+
+### 🚙 **Vehicle Management**
+- 6-vehicle fleet with detailed information
+- High-quality vehicle images from Pixabay
+- Status tracking and maintenance alerts
+- Daily rate management
+
+### 👥 **Customer Management**
+- Customer database with avatars
+- Contact information and rental history
+- Professional headshots from Pixabay
+
+### 📅 **Schedule & Calendar**
+- FullCalendar.js integration
+- Day/Week/Month views
+- Event management and scheduling
+- Google Calendar-like interface
+
+### 🔍 **Global Search**
+- Apple Spotlight-style search overlay
+- Search across all data (vehicles, customers, orders)
+- Keyboard shortcuts (Cmd/Ctrl + K)
+- Interactive results with popup details
+
+## 🚀 Live Demo
+
+**Visit the live dashboard:** [Your GitHub Pages URL will be here]
+
+## 🛠️ Technology Stack
+
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **Mapping**: Leaflet.js
+- **Calendar**: FullCalendar.js
+- **Icons**: Font Awesome
+- **Images**: Pixabay API
+- **Styling**: Custom CSS with CSS Grid & Flexbox
+- **Responsive Design**: Mobile-first approach
+
+## 📁 Project Structure
 
 ```
 Car Dashboard/
-├── public/                 # Public files served to browser
-│   └── index.html         # Main HTML file
-├── src/                   # Source code
-│   ├── components/        # Reusable UI components
-│   │   ├── MapComponent.js
-│   │   ├── StatisticsComponent.js
-│   │   ├── OrdersComponent.js
-│   │   ├── SpotlightSearchComponent.js
-│   │   └── ScheduleComponent.js
-│   ├── services/          # Data services and API layer
-│   │   ├── data.js        # Mock data
-│   │   └── dataService.js # Data access layer
-│   ├── utils/             # Utility functions and helpers
-│   │   └── helpers.js     # Common helper functions
-│   ├── config/            # Configuration files
-│   │   └── config.js      # App configuration
-│   └── app.js             # Main application entry point
-├── assets/                # Static assets
-│   ├── styles/            # CSS files
-│   │   ├── styles.css     # Main stylesheet
-│   │   └── schedule.css   # Schedule-specific styles
-│   ├── scripts/           # Additional scripts
-│   └── images/            # Image assets
-└── README.md              # This file
+├── public/                     # Main HTML pages
+│   ├── index.html             # Dashboard home page
+│   ├── vehicles.html          # Vehicle management
+│   ├── orders.html            # Order management
+│   ├── customers.html         # Customer management
+│   ├── reports.html           # Analytics & reports
+│   └── app.js                 # Main application script
+├── assets/
+│   ├── styles/                # CSS files
+│   │   ├── layout.css         # Main layout styles
+│   │   └── components/        # Component-specific styles
+│   └── scripts/
+│       ├── components/        # JavaScript components
+│       ├── services/          # API services
+│       └── config/            # Configuration files
+└── README.md                  # This file
 ```
 
-## 🚀 Features
+## 🎯 Vehicle Fleet
 
-### 📊 **Dashboard Overview**
-- Real-time statistics with trend indicators
-- Interactive layout controls (Grid, List, Compact views)
-- Live data updates every 30 seconds
+The dashboard manages a fleet of 6 premium vehicles:
 
-### 🗺️ **Interactive Map**
-- Real-time vehicle tracking
-- Custom markers with vehicle status
-- Zoom controls and vehicle focus functionality
-- Popup details with vehicle information
+1. **Toyota Avalon V6** - Chris Evan (B 3243 ABC)
+2. **Honda Civic 1.8 E C/T** - Sarah Johnson (B 1234 DEF)
+3. **Toyota Rav4** - Michael Chen (B 5678 GHI)
+4. **Lexus ES 350** - Emily Davis (B 9012 JKL)
+5. **Nissan X-Trail 2.5 CVT** - David Wilson (B 3456 MNO)
+6. **Acura RDX** - Lisa Anderson (B 7890 PQR)
 
-### 📅 **Advanced Scheduling**
-- Apple Calendar-inspired interface
-- Drag & drop booking rescheduling
-- Day, Week, and Month views
-- Interactive Gantt chart functionality
-- Customer name integration with details
+## 🖼️ Image Integration
 
-### 🔍 **Spotlight Search**
-- Apple Spotlight-like search experience
-- Universal search across vehicles, customers, and orders
-- Keyboard navigation (Cmd/Ctrl + K)
-- Instant results with fuzzy matching
+- **Pixabay API**: High-quality vehicle and customer images
+- **Real-time Loading**: Dynamic image fetching
+- **Fallback System**: Graceful degradation if API unavailable
+- **Caching**: 24-hour image cache for performance
 
-### 📋 **Order Management**
-- Ongoing, Upcoming, and Completed order tabs
-- Detailed order information
-- Customer and vehicle integration
-- Real-time status updates
+## 🚀 Quick Start
 
-## 🛠️ Technical Stack
+### Prerequisites
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- Git (for development)
 
-- **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3
-- **Mapping**: Leaflet.js
-- **Icons**: Font Awesome 6.4.0
-- **Module System**: ES6 Modules
-- **Architecture**: Component-based modular design
+### Local Development
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/car-dashboard.git
+   cd car-dashboard
+   ```
 
-## 📦 Components
+2. **Start local server**
+   ```bash
+   python3 -m http.server 8000
+   # or
+   npx serve public
+   ```
 
-### **MapComponent**
-- Vehicle tracking and visualization
-- Interactive map controls
-- Real-time location updates
-- Vehicle focus and popup management
+3. **Open in browser**
+   ```
+   http://localhost:8000/public/index.html
+   ```
 
-### **StatisticsComponent**
-- Dashboard metrics display
-- Trend calculation and visualization
-- Layout switching functionality
-- Real-time data updates
+### Pixabay API Setup (Optional)
+1. Get free API key from [Pixabay](https://pixabay.com/api/docs/)
+2. Update `assets/scripts/config/api-config.js`
+3. Replace `YOUR_PIXABAY_API_KEY_HERE` with your actual key
 
-### **OrdersComponent**
-- Order listing and management
-- Tab-based filtering
-- Order details modal
-- Customer integration
+## 🎨 Design Features
 
-### **SpotlightSearchComponent**
-- Universal search functionality
-- Keyboard navigation
-- Result categorization
-- Action integration
-
-### **ScheduleComponent**
-- Calendar visualization
-- Drag & drop scheduling
-- Multi-view support (Day/Week/Month)
-- Booking management
-
-## 🔧 Configuration
-
-The application uses a centralized configuration system located in `src/config/config.js`:
-
-```javascript
-import { config, getConfig, setConfig } from './src/config/config.js';
-
-// Get configuration value
-const mapZoom = getConfig('map.defaultZoom');
-
-// Set configuration value
-setConfig('features.darkMode', true);
-```
-
-## 📱 Getting Started
-
-1. **Open the application**: Navigate to `public/index.html` in your browser
-2. **Use Spotlight Search**: Press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux)
-3. **Navigate the Schedule**: Use Day/Week/Month tabs to switch views
-4. **Drag & Drop**: Reschedule bookings by dragging them to new times/dates
-5. **Interact with Map**: Click on vehicle markers for details
-
-## 🎨 Styling
-
-The application uses a modern design system with:
-- CSS Custom Properties for theming
-- Responsive design with mobile-first approach
-- Consistent spacing and typography
+### **Modern UI/UX**
+- Dark theme with green accent colors
 - Smooth animations and transitions
+- Responsive grid layouts
+- Professional typography
 
-## 🔄 Real-time Updates
-
-- **Map**: Vehicle locations update every 5 seconds
-- **Statistics**: Metrics refresh every 30 seconds
-- **Bookings**: Live schedule updates
-
-## 🌟 Key Features
-
-### **Responsive Design**
-- Mobile-first approach
-- Tablet and desktop optimized
-- Flexible grid layouts
+### **Interactive Elements**
+- Hover effects and micro-interactions
+- Drag-and-drop functionality
+- Real-time data updates
+- Modal popups and overlays
 
 ### **Accessibility**
 - Keyboard navigation support
-- ARIA labels and roles
+- Screen reader friendly
 - High contrast ratios
+- Semantic HTML structure
 
-### **Performance**
-- Modular loading
-- Efficient DOM manipulation
-- Optimized rendering
+## 📱 Responsive Design
 
-## 🔮 Future Enhancements
+- **Desktop**: Full-featured dashboard with side-by-side layouts
+- **Tablet**: Optimized grid layouts and touch interactions
+- **Mobile**: Stacked layouts with mobile-friendly navigation
 
-- Backend API integration
-- User authentication
-- Advanced reporting
-- Notification system
-- Multi-language support
-- Dark mode theme
-- Progressive Web App (PWA) features
+## 🔧 Customization
+
+### **Adding New Vehicles**
+1. Update vehicle data in `MapComponent.js`
+2. Add corresponding order in `OrdersComponent.js`
+3. Update vehicle options in HTML forms
+
+### **Modifying Styles**
+- Main styles: `assets/styles/layout.css`
+- Component styles: `assets/styles/components/`
+- Color scheme: CSS variables in `:root`
+
+### **API Configuration**
+- Pixabay settings: `assets/scripts/config/api-config.js`
+- Service configuration: `assets/scripts/services/`
+
+## 🐛 Troubleshooting
+
+### **Common Issues**
+- **Images not loading**: Check Pixabay API key configuration
+- **Map not displaying**: Ensure Leaflet.js is loaded
+- **Calendar not working**: Verify FullCalendar.js is included
+
+### **Browser Compatibility**
+- Chrome 80+
+- Firefox 75+
+- Safari 13+
+- Edge 80+
 
 ## 📄 License
 
-This project is for educational and demonstration purposes.
+This project is open source and available under the [MIT License](LICENSE).
 
 ## 🤝 Contributing
 
-This is a demonstration project showcasing modern web development practices with vanilla JavaScript and modular architecture.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📞 Support
+
+For support and questions:
+- Create an issue on GitHub
+- Check the troubleshooting section
+- Review the Pixabay setup guide
+
+---
+
+**Built with ❤️ for modern car rental management**
