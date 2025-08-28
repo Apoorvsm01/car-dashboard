@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Carvo Fleet Management</title>
+    
+    <!-- Component CSS Files -->
+    <link rel="stylesheet" href="../assets/styles/layout.css">
+    <link rel="stylesheet" href="../assets/styles/components/navbar.css">
+    <link rel="stylesheet" href="../assets/styles/components/orders.css">
+    <link rel="stylesheet" href="../assets/styles/components/schedule.css">
+    <link rel="stylesheet" href="../assets/styles/components/spotlight.css">
+    
+    <!-- External Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- FullCalendar -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+    
+    <style>
+        /* Home Page Specific Styles */
+        .home-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .home-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+        }
+
+        .home-title p {
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .home-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-refresh {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-refresh:hover {
+            background: #059669;
+        }
+
+        .dashboard-overview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .stats-overview {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .date-filter select {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            color: #374151;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .stat-title-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-title-section i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .stat-header h3 {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            color: #10B981;
+        }
+
+        .stat-change.negative {
+            color: #EF4444;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+
+        .stat-chart {
+            position: relative;
+        }
+
+        .mini-chart {
+            width: 100%;
+            height: 30px;
+            margin-bottom: 6px;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke: #10B981;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #9CA3AF;
+            font-weight: 500;
+        }
+
+        .map-overview {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .map-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .map-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .size-btn {
+            padding: 6px 12px;
+            border: 1px solid #D1D5DB;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .size-btn:hover {
+            background: #F3F4F6;
+        }
+
+        .size-btn.active {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+
+        .map-container {
+            position: relative;
+            height: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #E5E7EB;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-controls-overlay {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .map-btn {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .map-btn:hover {
+            background: #F3F4F6;
+        }
+
+        .dashboard-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .orders-overview {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+        }
+
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .orders-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .see-all-btn {
+            background: none;
+            border: none;
+            color: #10B981;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .see-all-btn:hover {
+            color: #059669;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-align: center;
+            line-height: 1.2;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            background: #F3F4F6;
+            color: #1F2937;
+        }
+
+        .tab-btn.active {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+
+        .tab-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .orders-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #F3F4F6;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .order-item:hover {
+            background: #F9FAFB;
+            margin: 0 -24px;
+            padding: 16px 24px;
+            border-radius: 8px;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-vehicle {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .order-id {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 4px;
+        }
+
+        .order-model {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 2px;
+        }
+
+        .order-plate {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 8px;
+        }
+
+        .order-status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .order-status-badge.in-use {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+        }
+
+        .order-customer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .customer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .customer-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .customer-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .customer-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 2px;
+        }
+
+        .customer-phone {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 4px;
+        }
+
+        .rent-due-date {
+            font-size: 11px;
+            color: #9CA3AF;
+        }
+
+
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .home-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .home-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-car sidebar-logo"></i>
+                <span class="sidebar-title">Carvo</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="vehicles.html" class="nav-link">
+                    <i class="fas fa-car"></i>
+                    <span>Vehicles</span>
+                    <i class="fas fa-chevron-down nav-arrow"></i>
+                </a>
+                <a href="customers.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="orders.html" class="nav-link">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Orders pricing</span>
+                </a>
+                <a href="reports.html" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                    <i class="fas fa-chevron-down nav-arrow"></i>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="help.html" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="home-header">
+                <div class="home-title">
+                    <h1>Home</h1>
+                    <p>Real-time overview of your fleet and bookings</p>
+                </div>
+                <div class="home-actions">
+                    <button class="btn-search" id="spotlight-trigger">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                    <button class="btn-refresh">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh Data
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Overview -->
+            <div class="dashboard-overview">
+                <!-- Statistics Overview -->
+                <div class="stats-overview">
+                    <div class="stats-header">
+                        <h2>
+                            <i class="fas fa-chart-bar"></i>
+                            Statistic overview
+                        </h2>
+                        <div class="stats-controls">
+                            <div class="date-filter">
+                                <select>
+                                    <option>Past 7 days</option>
+                                    <option>Past 30 days</option>
+                                    <option>Past 90 days</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <!-- Statistics cards will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Map Overview -->
+                <div class="map-overview">
+                    <div class="map-header">
+                        <h2>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Map
+                        </h2>
+                        <div class="map-controls">
+                            <button class="size-btn" data-size="small">S</button>
+                            <button class="size-btn active" data-size="medium">M</button>
+                            <button class="size-btn" data-size="large">L</button>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <div id="map"></div>
+                        <div class="map-controls-overlay">
+                            <button class="map-btn" id="zoom-in">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="map-btn" id="zoom-out">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Details -->
+            <div class="dashboard-details">
+                <!-- Orders Overview -->
+                <div class="orders-overview">
+                    <div class="orders-header">
+                        <h3>
+                            <i class="fas fa-list"></i>
+                            Orders
+                        </h3>
+                        <button class="see-all-btn">
+                            See all
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="tab-container">
+                        <button class="tab-btn active">
+                            Ongoing
+                            <span class="tab-count">2</span>
+                        </button>
+                        <button class="tab-btn">
+                            Next 5 days
+                            <span class="tab-count">0</span>
+                        </button>
+                    </div>
+                    <div class="orders-list">
+                        <!-- Orders will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Schedule Overview -->
+                <div class="schedule-overview">
+                    <div class="schedule-header">
+                        <h3>
+                            <i class="fas fa-calendar"></i>
+                            Schedule
+                        </h3>
+                        <div class="schedule-controls">
+                            <select class="sort-select">
+                                <option>Sort by</option>
+                            </select>
+                            <button class="filter-btn">
+                                <i class="fas fa-filter"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Spotlight Search Overlay -->
+    <div id="spotlight-overlay" class="spotlight-overlay">
+        <div class="spotlight-container">
+            <div class="spotlight-search">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" id="spotlight-input" placeholder="Search orders, vehicles, customers..." autocomplete="off">
+                <div class="search-actions">
+                    <button class="search-close" id="spotlight-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="spotlight-results" id="spotlight-results">
+                <!-- Results will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Popup -->
+    <div id="order-popup" class="order-popup-overlay">
+        <div class="order-popup">
+            <div class="popup-header">
+                <h3>Order Details</h3>
+                <button class="popup-close" id="order-popup-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="popup-content" id="order-popup-content">
+                <!-- Order details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- External Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- FullCalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    
+    <!-- Component Scripts -->
+    <script src="../assets/scripts/config/api-config.js"></script>
+    <script src="../assets/scripts/services/PixabayService.js"></script>
+    <script src="../assets/scripts/components/StatisticsComponent.js"></script>
+    <script src="../assets/scripts/components/MapComponent.js"></script>
+    <script src="../assets/scripts/components/ScheduleComponent.js"></script>
+    <script src="../assets/scripts/components/OrdersComponent.js"></script>
+    <script src="../assets/scripts/components/SpotlightComponent.js"></script>
+    
+    <!-- Main Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>

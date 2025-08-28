@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicles - Carvo Fleet Management</title>
+    
+    <!-- Component CSS Files -->
+    <link rel="stylesheet" href="../assets/styles/layout.css">
+    <link rel="stylesheet" href="../assets/styles/components/navbar.css">
+    <link rel="stylesheet" href="../assets/styles/components/statistics.css">
+    <link rel="stylesheet" href="../assets/styles/components/map.css">
+    <link rel="stylesheet" href="../assets/styles/components/spotlight.css">
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Vehicles Page Specific Styles */
+        .vehicles-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .vehicles-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+        }
+
+        .vehicles-title p {
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .vehicles-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-add-vehicle {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-add-vehicle:hover {
+            background: #059669;
+        }
+
+        .vehicles-filters {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .vehicle-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .vehicle-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .vehicle-image {
+            height: 200px;
+            width: 100%;
+            background: #F3F4F6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vehicle-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .vehicle-status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .vehicle-status-badge.available {
+            background: #10B981;
+        }
+
+        .vehicle-status-badge.in-use {
+            background: #3B82F6;
+        }
+
+        .vehicle-status-badge.maintenance {
+            background: #F59E0B;
+        }
+
+        .vehicle-content {
+            padding: 20px;
+        }
+
+        .vehicle-model {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+
+        .vehicle-license {
+            font-size: 14px;
+            color: #6B7280;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 12px;
+        }
+
+        .vehicle-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .vehicle-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .vehicle-info span {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .vehicle-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #10B981;
+        }
+
+        .vehicle-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-vehicle-action {
+            padding: 6px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            background: white;
+            color: #6B7280;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-vehicle-action:hover {
+            background: #F3F4F6;
+            color: #1F2937;
+        }
+
+        .btn-vehicle-action.primary {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+
+        .btn-vehicle-action.primary:hover {
+            background: #059669;
+        }
+
+        @media (max-width: 768px) {
+            .vehicles-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-car sidebar-logo"></i>
+                <span class="sidebar-title">Carvo</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="vehicles.html" class="nav-link active">
+                    <i class="fas fa-car"></i>
+                    <span>Vehicles</span>
+                    <i class="fas fa-chevron-down nav-arrow"></i>
+                </a>
+                <a href="customers.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="orders.html" class="nav-link">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Orders pricing</span>
+                </a>
+                <a href="reports.html" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                    <i class="fas fa-chevron-down nav-arrow"></i>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="help.html" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="vehicles-header">
+                <div class="vehicles-title">
+                    <h1>Vehicles</h1>
+                    <p>Manage your fleet of vehicles</p>
+                </div>
+                <div class="vehicles-actions">
+                    <button class="btn-search" id="spotlight-trigger">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                    <button class="btn-add-vehicle" onclick="addVehicle()">
+                        <i class="fas fa-plus"></i>
+                        Add Vehicle
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="vehicles-filters">
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select id="status-filter">
+                            <option value="">All Status</option>
+                            <option value="available">Available</option>
+                            <option value="in-use">In Use</option>
+                            <option value="maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Brand</label>
+                        <select id="brand-filter">
+                            <option value="">All Brands</option>
+                            <option value="toyota">Toyota</option>
+                            <option value="honda">Honda</option>
+                            <option value="daihatsu">Daihatsu</option>
+                            <option value="nissan">Nissan</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" id="search-filter" placeholder="Search vehicles...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicles Grid -->
+            <div class="vehicles-grid" id="vehicles-grid">
+                <!-- Vehicle cards will be populated by JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Vehicle Popup -->
+    <div id="add-vehicle-popup" class="order-popup-overlay">
+        <div class="order-popup">
+            <div class="popup-header">
+                <h3>Add New Vehicle</h3>
+                <button class="popup-close" id="add-vehicle-popup-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="popup-content">
+                <form id="add-vehicle-form">
+                    <div class="order-detail-section">
+                        <h5 class="detail-section-title">Vehicle Information</h5>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label class="detail-label">Brand & Model</label>
+                                <input type="text" name="model" required class="detail-input">
+                            </div>
+                            <div class="detail-item">
+                                <label class="detail-label">License Plate</label>
+                                <input type="text" name="licensePlate" required class="detail-input">
+                            </div>
+                            <div class="detail-item">
+                                <label class="detail-label">Year</label>
+                                <input type="number" name="year" min="2000" max="2024" required class="detail-input">
+                            </div>
+                            <div class="detail-item">
+                                <label class="detail-label">Daily Rate ($)</label>
+                                <input type="number" name="dailyRate" min="0" step="0.01" required class="detail-input">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-detail-section">
+                        <h5 class="detail-section-title">Status & Details</h5>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label class="detail-label">Status</label>
+                                <select name="status" required class="detail-input">
+                                    <option value="available">Available</option>
+                                    <option value="maintenance">Maintenance</option>
+                                </select>
+                            </div>
+                            <div class="detail-item">
+                                <label class="detail-label">Vehicle Type</label>
+                                <select name="type" required class="detail-input">
+                                    <option value="sedan">Sedan</option>
+                                    <option value="suv">SUV</option>
+                                    <option value="hatchback">Hatchback</option>
+                                    <option value="van">Van</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="popup-actions">
+                        <button type="button" class="btn-secondary" onclick="closeAddVehicleModal()">Cancel</button>
+                        <button type="submit" class="btn-primary">Add Vehicle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../assets/scripts/config/api-config.js"></script>
+    <script src="../assets/scripts/services/PixabayService.js"></script>
+    
+    <!-- Vehicles Page Script -->
+    <script>
+        // Vehicles data
+        let vehicles = [
+            {
+                id: 1,
+                model: 'Toyota Avalon V6',
+                licensePlate: 'B 3243 ABC',
+                status: 'in-use',
+                year: 2022,
+                dailyRate: 65,
+                image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&h=300&fit=crop',
+                brand: 'toyota'
+            },
+            {
+                id: 2,
+                model: 'Honda Civic 1.8 E C/T',
+                licensePlate: 'B 1234 DEF',
+                status: 'in-use',
+                year: 2023,
+                dailyRate: 55,
+                image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop',
+                brand: 'honda'
+            },
+            {
+                id: 3,
+                model: 'Toyota Rav4',
+                licensePlate: 'B 5678 GHI',
+                status: 'in-use',
+                year: 2022,
+                dailyRate: 60,
+                image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=300&fit=crop',
+                brand: 'toyota'
+            },
+            {
+                id: 4,
+                model: 'Lexus ES 350',
+                licensePlate: 'B 9012 JKL',
+                status: 'in-use',
+                year: 2023,
+                dailyRate: 75,
+                image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop',
+                brand: 'lexus'
+            },
+            {
+                id: 5,
+                model: 'Nissan X-Trail 2.5 CVT',
+                licensePlate: 'B 3456 MNO',
+                status: 'in-use',
+                year: 2022,
+                dailyRate: 70,
+                image: 'https://images.unsplash.com/photo-1582639510494-c80b5de9f148?w=400&h=300&fit=crop',
+                brand: 'nissan'
+            },
+            {
+                id: 6,
+                model: 'Acura RDX',
+                licensePlate: 'B 7890 PQR',
+                status: 'in-use',
+                year: 2023,
+                dailyRate: 80,
+                image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=400&h=300&fit=crop',
+                brand: 'acura'
+            }
+        ];
+
+        // Initialize vehicles page
+        function initVehiclesPage() {
+            renderVehicles(vehicles);
+            setupFilters();
+            setupModalHandlers();
+        }
+
+        // Render vehicles grid
+        function renderVehicles(vehiclesToRender) {
+            const grid = document.getElementById('vehicles-grid');
+            grid.innerHTML = '';
+
+            vehiclesToRender.forEach(vehicle => {
+                const card = createVehicleCard(vehicle);
+                grid.appendChild(card);
+            });
+        }
+
+        // Create vehicle card
+        function createVehicleCard(vehicle) {
+            const card = document.createElement('div');
+            card.className = 'vehicle-card';
+            
+            card.innerHTML = `
+                <div class="vehicle-image">
+                    <img src="${vehicle.image}" alt="${vehicle.model}" onerror="this.style.display='none';">
+                    <span class="vehicle-status-badge ${vehicle.status}">${vehicle.status.replace('-', ' ').toUpperCase()}</span>
+                </div>
+                <div class="vehicle-content">
+                    <div class="vehicle-model">${vehicle.model}</div>
+                    <div class="vehicle-license">${vehicle.licensePlate}</div>
+                    <div class="vehicle-details">
+                        <div class="vehicle-info">
+                            <span>Year: ${vehicle.year}</span>
+                            <span>ID: ${vehicle.id}</span>
+                        </div>
+                        <div class="vehicle-price">$${vehicle.dailyRate}/day</div>
+                    </div>
+                    <div class="vehicle-actions">
+                        <button class="btn-vehicle-action" onclick="viewVehicle(${vehicle.id})">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn-vehicle-action" onclick="editVehicle(${vehicle.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-vehicle-action primary" onclick="rentVehicle(${vehicle.id})">
+                            <i class="fas fa-key"></i> Rent
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Setup filters
+        function setupFilters() {
+            const statusFilter = document.getElementById('status-filter');
+            const brandFilter = document.getElementById('brand-filter');
+            const searchFilter = document.getElementById('search-filter');
+
+            [statusFilter, brandFilter, searchFilter].forEach(filter => {
+                filter.addEventListener('change', filterVehicles);
+                filter.addEventListener('input', filterVehicles);
+            });
+        }
+
+        // Filter vehicles
+        function filterVehicles() {
+            const statusFilter = document.getElementById('status-filter').value;
+            const brandFilter = document.getElementById('brand-filter').value;
+            const searchFilter = document.getElementById('search-filter').value.toLowerCase();
+
+            const filteredVehicles = vehicles.filter(vehicle => {
+                const matchesStatus = !statusFilter || vehicle.status === statusFilter;
+                const matchesBrand = !brandFilter || vehicle.brand === brandFilter;
+                const matchesSearch = !searchFilter || 
+                    vehicle.model.toLowerCase().includes(searchFilter) ||
+                    vehicle.licensePlate.toLowerCase().includes(searchFilter);
+
+                return matchesStatus && matchesBrand && matchesSearch;
+            });
+
+            renderVehicles(filteredVehicles);
+        }
+
+        // Setup popup handlers
+        function setupModalHandlers() {
+            const popup = document.getElementById('add-vehicle-popup');
+            const closeBtn = document.getElementById('add-vehicle-popup-close');
+            const form = document.getElementById('add-vehicle-form');
+
+            closeBtn.addEventListener('click', closeAddVehicleModal);
+            popup.addEventListener('click', (e) => {
+                if (e.target === popup) closeAddVehicleModal();
+            });
+
+            form.addEventListener('submit', handleAddVehicle);
+        }
+
+        // Add vehicle popup functions
+        function addVehicle() {
+            document.getElementById('add-vehicle-popup').classList.add('active');
+        }
+
+        function closeAddVehicleModal() {
+            document.getElementById('add-vehicle-popup').classList.remove('active');
+            document.getElementById('add-vehicle-form').reset();
+        }
+
+        function handleAddVehicle(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const newVehicle = {
+                id: vehicles.length + 1,
+                model: formData.get('model'),
+                licensePlate: formData.get('licensePlate'),
+                status: formData.get('status'),
+                year: parseInt(formData.get('year')),
+                dailyRate: parseFloat(formData.get('dailyRate')),
+                image: 'https://via.placeholder.com/400x300/6B7280/FFFFFF?text=New+Vehicle',
+                brand: 'other'
+            };
+
+            vehicles.push(newVehicle);
+            renderVehicles(vehicles);
+            closeAddVehicleModal();
+        }
+
+        // Vehicle action functions
+        function viewVehicle(id) {
+            const vehicle = vehicles.find(v => v.id === id);
+            if (vehicle) {
+                alert(`Viewing vehicle: ${vehicle.model}`);
+            }
+        }
+
+        function editVehicle(id) {
+            const vehicle = vehicles.find(v => v.id === id);
+            if (vehicle) {
+                alert(`Editing vehicle: ${vehicle.model}`);
+            }
+        }
+
+        function rentVehicle(id) {
+            const vehicle = vehicles.find(v => v.id === id);
+            if (vehicle) {
+                if (vehicle.status === 'available') {
+                    vehicle.status = 'in-use';
+                    renderVehicles(vehicles);
+                    alert(`Vehicle ${vehicle.model} has been rented!`);
+                } else {
+                    alert('This vehicle is not available for rent.');
+                }
+            }
+        }
+
+        // Initialize Pixabay images
+        async function initPixabayImages() {
+            if (window.PixabayService) {
+                const pixabayService = new PixabayService();
+                try {
+                    for (let vehicle of vehicles) {
+                        if (vehicle.brand) {
+                            const imageData = await pixabayService.getCarBrandImages(vehicle.brand);
+                            if (imageData && imageData.length > 0) {
+                                const randomImage = pixabayService.getRandomImage(imageData);
+                                vehicle.image = randomImage.webformatURL;
+                            }
+                        }
+                    }
+                    renderVehicles(vehicles);
+                    console.log('✅ Vehicle images updated with Pixabay');
+                } catch (error) {
+                    console.warn('⚠️ Failed to update vehicle images:', error);
+                }
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', async () => {
+            initVehiclesPage();
+            await initPixabayImages();
+        });
+    </script>
+
+    <!-- Spotlight Search Overlay -->
+    <div id="spotlight-overlay" class="spotlight-overlay">
+        <div class="spotlight-container">
+            <div class="spotlight-search">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" id="spotlight-input" placeholder="Search vehicles, customers, orders..." autocomplete="off">
+                <div class="search-actions">
+                    <button class="search-close" id="spotlight-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="spotlight-results" id="spotlight-results">
+                <!-- Results will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Details Popup -->
+    <div id="vehicle-popup" class="order-popup-overlay">
+        <div class="order-popup">
+            <div class="popup-header">
+                <h3>Vehicle Details</h3>
+                <button class="popup-close" id="vehicle-popup-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="popup-content" id="vehicle-popup-content">
+                <!-- Vehicle details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Spotlight Component Script -->
+    <script src="../assets/scripts/components/SpotlightComponent.js"></script>
+    <script>
+        // Initialize Spotlight Component for vehicles page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof SpotlightComponent !== 'undefined') {
+                new SpotlightComponent();
+                console.log('✅ Spotlight component initialized for vehicles page');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,376 @@
+/* Map Component */
+.map-section {
+    margin-bottom: 24px;
+    min-width: 360px;
+    height: auto;
+    width: 100%;
+}
+
+.map-container {
+    position: relative;
+    background: #FFFFFF;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border: 1px solid #E5E7EB;
+    height: 400px;
+    min-height: 320px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    overflow: hidden;
+}
+
+/* Google Maps specific styles */
+.gm-style {
+    border-radius: 8px;
+}
+
+.gm-style-moc {
+    border-radius: 8px;
+}
+
+/* Custom Car Markers */
+.car-marker {
+    background: #10B981;
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.car-marker:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.car-marker::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid #10B981;
+}
+
+.car-marker i {
+    color: #FFFFFF;
+    font-size: 12px;
+}
+
+.car-marker.available {
+    background: #3B82F6;
+}
+
+.car-marker.available::before {
+    border-bottom-color: #3B82F6;
+}
+
+.car-marker.maintenance {
+    background: #F59E0B;
+}
+
+.car-marker.maintenance::before {
+    border-bottom-color: #F59E0B;
+}
+
+/* Vehicle Popup */
+.vehicle-popup {
+    background: #FFFFFF;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid #E5E7EB;
+    min-width: 280px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.vehicle-popup-header {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.vehicle-popup-image {
+    width: 60px;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.vehicle-popup-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vehicle-popup-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.vehicle-popup-license {
+    margin: 0 0 4px 0;
+    font-size: 12px;
+    color: #6B7280;
+}
+
+.vehicle-popup-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vehicle-popup-status.available {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.vehicle-popup-status.in-use {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+.vehicle-popup-status.maintenance {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.vehicle-popup-section {
+    border-top: 1px solid #E5E7EB;
+    padding-top: 12px;
+}
+
+.vehicle-popup-section h5 {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.popup-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.popup-label {
+    color: #6B7280;
+    font-weight: 500;
+}
+
+.popup-value {
+    color: #111827;
+    font-weight: 400;
+}
+
+.vehicle-popup-image {
+    position: relative;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+.vehicle-popup-image img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+}
+
+.vehicle-placeholder {
+    width: 100%;
+    height: 120px;
+    background: #F3F4F6;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9CA3AF;
+    font-size: 24px;
+}
+
+.vehicle-popup-info h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0 0 8px 0;
+}
+
+.vehicle-popup-info p {
+    font-size: 14px;
+    color: #6B7280;
+    margin: 4px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.vehicle-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10B981;
+}
+
+.status-indicator.available {
+    background: #3B82F6;
+}
+
+.status-indicator.maintenance {
+    background: #F59E0B;
+}
+
+.status-text {
+    font-size: 12px;
+    color: #6B7280;
+    font-weight: 500;
+}
+
+.vehicle-details {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #F3F4F6;
+}
+
+.vehicle-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.vehicle-detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.detail-label {
+    font-size: 12px;
+    color: #6B7280;
+    font-weight: 500;
+}
+
+.detail-value {
+    font-size: 12px;
+    color: #1F2937;
+    font-weight: 600;
+}
+
+/* Map Controls */
+.map-controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+}
+
+.map-btn {
+    width: 40px;
+    height: 40px;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #6B7280;
+}
+
+.map-btn:hover {
+    background: #F9FAFB;
+    color: #1F2937;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.map-btn i {
+    font-size: 14px;
+}
+
+/* Map Section Header */
+.map-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.size-presets {
+    display: flex;
+    gap: 8px;
+}
+
+.size-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #E5E7EB;
+    background: #FFFFFF;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #6B7280;
+}
+
+.size-btn.active,
+.size-btn:hover {
+    background: #F3F4F6;
+    color: #111827;
+}
+
+.map-section .section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .map-container {
+        height: 300px;
+    }
+    
+    .vehicle-popup {
+        min-width: 240px;
+        padding: 12px;
+    }
+    
+    .vehicle-popup-image img,
+    .vehicle-placeholder {
+        height: 80px;
+    }
+}
