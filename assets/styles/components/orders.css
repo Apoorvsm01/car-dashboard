@@ -68,7 +68,7 @@
 /* Orders List */
 .orders-list {
     max-height: 18.75rem;
-    overflow-y: auto;
+    /* overflow-y: auto; */
 }
 
 .order-item {

@@ -367,6 +367,56 @@ class CarvoDashboard {
                 this.closeModals();
             }
         });
+        
+        // Hamburger menu functionality
+        this.setupHamburgerMenu();
+    }
+
+    setupHamburgerMenu() {
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const sidebar = document.querySelector('.sidebar');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+        
+        if (hamburgerMenu && sidebar && mobileOverlay) {
+            // Toggle menu
+            hamburgerMenu.addEventListener('click', () => {
+                hamburgerMenu.classList.toggle('active');
+                sidebar.classList.toggle('show');
+                mobileOverlay.classList.toggle('show');
+                document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+            });
+            
+            // Close menu when clicking overlay
+            mobileOverlay.addEventListener('click', () => {
+                hamburgerMenu.classList.remove('active');
+                sidebar.classList.remove('show');
+                mobileOverlay.classList.remove('show');
+                document.body.style.overflow = '';
+            });
+            
+            // Close menu when clicking a nav link (mobile)
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        hamburgerMenu.classList.remove('active');
+                        sidebar.classList.remove('show');
+                        mobileOverlay.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+            
+            // Close menu on window resize (if going from mobile to desktop)
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    hamburgerMenu.classList.remove('active');
+                    sidebar.classList.remove('show');
+                    mobileOverlay.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
     }
 
     handleKeyboardShortcuts(e) {
